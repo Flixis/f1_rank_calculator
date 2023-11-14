@@ -1,6 +1,7 @@
 #[cfg(feature = "ssr")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    use sqlx::mysql::MySqlPoolOptions;
     use actix_files::Files;
     use actix_web::*;
     use leptos::*;
@@ -12,6 +13,15 @@ async fn main() -> std::io::Result<()> {
     // Generate the list of routes in your Leptos App
     let routes = generate_route_list(App);
     println!("listening on http://{}", &addr);
+
+    // Create a SQLx connection pool
+    let database_url = dotenv::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let db_pool = MySqlPoolOptions::new()
+        .max_connections(5)
+        .connect(&database_url)
+        .await
+        .expect("Failed to create pool");
+
 
     HttpServer::new(move || {
         let leptos_options = &conf.leptos_options;
@@ -27,6 +37,7 @@ async fn main() -> std::io::Result<()> {
             .service(favicon)
             .leptos_routes(leptos_options.to_owned(), routes.to_owned(), App)
             .app_data(web::Data::new(leptos_options.to_owned()))
+            .app_data(web::Data::new(db_pool.clone()))
         //.wrap(middleware::Compress::default())
     })
     .bind(&addr)?
