@@ -1,19 +1,3 @@
-use actix_web::{get, HttpResponse, Responder};
-use serde::Serialize;
-
-#[derive(Serialize)]
-pub struct Response {
-    pub message: String,
-}
-
-#[get("/health")]
-async fn healthcheck() -> impl Responder {
-    let response = Response {
-        message: "Everything is working fine".to_string(),
-    };
-    HttpResponse::Ok().json(response)
-}
-
 #[cfg(feature = "ssr")]
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -23,6 +7,7 @@ async fn main() -> std::io::Result<()> {
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
     use f1_rank_calculator::app::*;
+    use f1_rank_calculator::api::get_requests::*;
 
     let conf = get_configuration(None).await.unwrap();
     let addr = conf.leptos_options.site_addr;
