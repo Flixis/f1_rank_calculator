@@ -16,4 +16,12 @@ pub mod get_requests {
         };
         HttpResponse::Ok().json(response)
     }
+
+    #[get("/api/health")]
+    pub async fn api_health() -> impl Responder {
+        let response = Response {
+            message: "From api is working fine".to_string(),
+        };
+        HttpResponse::Ok().json(response)
+    }
 }
