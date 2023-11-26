@@ -37,6 +37,27 @@
 /api/v1/f1/constructors/renault/constructorStandings/1/seasons
 ```
 
+## Qualifying (Options)
+
+```html
+/circuits/<circuitId>
+/constructors/<constructorId>
+/drivers/<driverId>
+/grid/<position>
+/results/<position>
+/fastest/<rank>
+/status/<statusId>
+```
+
+```
+api/v1/f1/2008/drivers/
+
+api/v1/f1/drivers/alonso/constructors/renault/qualifying
+
+api/v1/f1/2008/qualifying/1
+```
+
+
 ### How it should work
 
 ```

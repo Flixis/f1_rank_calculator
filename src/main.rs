@@ -7,7 +7,7 @@ async fn main() -> std::io::Result<()> {
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
     use f1_rank_calculator::app::*;
-    use f1_rank_calculator::api::get_requests::*;
+    use f1_rank_calculator::api::qualifying::get_requests::*;
 
     let conf = get_configuration(None).await.unwrap();
     let addr = conf.leptos_options.site_addr;
@@ -30,6 +30,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .service(get_qualifying)
+            .service(get_circuit_info)
             .route("/api/{tail:.*}", leptos_actix::handle_server_fns())
             // serve JS/WASM/CSS from `pkg`
             .service(Files::new("/pkg", format!("{site_root}/pkg")))
