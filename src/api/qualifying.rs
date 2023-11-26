@@ -28,7 +28,7 @@ pub mod get_requests {
         limit: i32
     }
 
-    #[get("/api/qualifying")]
+    #[get("/api/v1/f1/qualifying")]
     pub async fn get_qualifying(
         pool: web::Data<MySqlPool>,
         query_params: web::Query<QualifyingQueryParams>,
@@ -50,23 +50,6 @@ pub mod get_requests {
                 HttpResponse::InternalServerError().finish()
             }
         }
-    }
-
-
-    #[get("/api/v1/f1/{year}/circuits/{circuitId}")]
-    pub async fn get_circuit_info(
-        year: web::Path<(i32, String)>, 
-        info: web::Path<(i32, String)>,
-    ) -> impl Responder {
-        // Extract `year` and `circuitId` from the URL path
-        let year = info.0;
-        let circuit_id = &info.1;
-    
-        // Your logic to fetch circuit information goes here
-    
-        // Return a response
-        HttpResponse::Ok().body(format!("Circuit info for year {} and ID: {}", year, circuit_id))
-    }
-    
+    }   
 
 }
