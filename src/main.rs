@@ -9,6 +9,7 @@ async fn main() -> std::io::Result<()> {
     use f1_rank_calculator::app::*;
     use f1_rank_calculator::api::qualifying::get_requests::get_qualifying;
     use f1_rank_calculator::api::circuits::get_requests::get_circuit_info;
+    use f1_rank_calculator::api::drivers::get_requests::get_driver_information;
 
 
     let conf = get_configuration(None).await.unwrap();
@@ -32,7 +33,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .service(get_qualifying)
-            .service(get_circuit_info)
+            .service(get_driver_information)
             .route("/api/{tail:.*}", leptos_actix::handle_server_fns())
             // serve JS/WASM/CSS from `pkg`
             .service(Files::new("/pkg", format!("{site_root}/pkg")))

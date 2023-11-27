@@ -1,0 +1,53 @@
+// This module is only compiled when the `ssr` feature is enabled
+#[cfg(feature = "ssr")]
+pub mod get_requests {
+    use actix_web::{get, HttpResponse, Responder, web};
+    use sqlx::MySqlPool;
+    use serde::{Serialize, Deserialize};
+
+
+    #[derive(Serialize, Deserialize ,sqlx::FromRow)]
+    struct Driver_info {
+        driverId: i32,
+        driverRef: String,
+        number: i32,
+        code: String,
+        forename: String,
+        surname: String,
+        dob: chrono::NaiveDate,
+        nationality: String,
+        url: String,
+    }
+
+    #[get("/api/v1/f1/drivers/{driver_name}")]
+    pub async fn get_driver_information(
+        driver_name: web::Path<String>, 
+        pool: web::Data<MySqlPool>,
+    ) -> impl Responder {
+
+        let query = format!("SELECT *
+        FROM f1_database.drivers
+        WHERE driverRef = \"{}\"
+        LIMIT 25;", driver_name);
+    
+        let result = sqlx::query_as::<_, Driver_info>(&query)
+            .fetch_all(pool.get_ref())
+            .await;
+
+        match result {
+            Ok(mut drivers) => {
+                if let Some(driver) = drivers.pop() {
+                    HttpResponse::Ok().json(driver)
+                } else {
+                    HttpResponse::NotFound().body("Driver not found")
+                }
+            }
+            Err(e) => {
+                eprintln!("Database error: {:?}", e);
+                HttpResponse::InternalServerError().finish()
+            }
+        }
+    }
+    
+
+}
