@@ -9,16 +9,12 @@ pub mod get_requests {
     #[derive(Serialize, sqlx::FromRow)]
     #[allow(non_snake_case)]
     struct Qualifying {
-        // #[serde(rename = "qualifyId")]
-        qualifyId: i32,
-        // #[serde(rename = "raceId")]
-        raceId: i32,
-        // #[serde(rename = "driverId")]
-        driverId: i32,
-        // #[serde(rename = "constructorId")]
-        constructorId: i32,
-        number: i32,
-        position: i32,
+        qualifyId: Option<i32>,
+        raceId: Option<i32>,
+        driverId: Option<i32>,
+        constructorId: Option<i32>,
+        number: Option<i32>,
+        position: Option<i32>,
         //Might return NULL therefore option
         q1: Option<String>,
         q2: Option<String>,

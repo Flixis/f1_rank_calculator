@@ -10,16 +10,17 @@ pub mod get_requests {
     #[derive(Serialize, Deserialize ,sqlx::FromRow)]
     #[allow(non_snake_case)]
     struct DriverInfo {
-        driverId: i32,
-        driverRef: String,
-        number: i32,
-        code: String,
-        forename: String,
-        surname: String,
-        dob: chrono::NaiveDate,
-        nationality: String,
-        url: String,
+        driverId: Option<i32>,
+        driverRef: Option<String>,
+        number: Option<i32>,
+        code: Option<String>,
+        forename: Option<String>,
+        surname: Option<String>,
+        dob: Option<chrono::NaiveDate>,
+        nationality: Option<String>,
+        url: Option<String>,
     }
+    
 
     #[get("/api/v1/f1/drivers/{driver_name}")]
     pub async fn get_driver_information(
