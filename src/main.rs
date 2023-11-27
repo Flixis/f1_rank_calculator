@@ -8,7 +8,6 @@ async fn main() -> std::io::Result<()> {
     use leptos_actix::{generate_route_list, LeptosRoutes};
     use f1_rank_calculator::app::*;
     use f1_rank_calculator::api::qualifying::get_requests::get_qualifying;
-    use f1_rank_calculator::api::circuits::get_requests::get_circuit_info;
     use f1_rank_calculator::api::drivers::get_requests::get_driver_information;
 
 

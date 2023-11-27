@@ -1,3 +1,4 @@
+#![allow(non_snake_case)] //TODO: Figure out a way to rename the fields inside the structs for database to match rust-lang style
 // This module is only compiled when the `ssr` feature is enabled
 #[cfg(feature = "ssr")]
 pub mod get_requests {
@@ -6,6 +7,7 @@ pub mod get_requests {
     use serde::{Serialize, Deserialize};
 
     #[derive(Serialize, sqlx::FromRow)]
+    #[allow(non_snake_case)]
     struct Qualifying {
         // #[serde(rename = "qualifyId")]
         qualifyId: i32,

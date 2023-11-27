@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]//TODO: Figure out a way to rename the fields inside the structs for database to match rust-lang style
 // This module is only compiled when the `ssr` feature is enabled
 #[cfg(feature = "ssr")]
 pub mod get_requests {
@@ -7,7 +8,8 @@ pub mod get_requests {
 
 
     #[derive(Serialize, Deserialize ,sqlx::FromRow)]
-    struct Driver_info {
+    #[allow(non_snake_case)]
+    struct DriverInfo {
         driverId: i32,
         driverRef: String,
         number: i32,
@@ -30,7 +32,7 @@ pub mod get_requests {
         WHERE driverRef = \"{}\"
         LIMIT 25;", driver_name);
     
-        let result = sqlx::query_as::<_, Driver_info>(&query)
+        let result = sqlx::query_as::<_, DriverInfo>(&query)
             .fetch_all(pool.get_ref())
             .await;
 

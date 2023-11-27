@@ -2,14 +2,11 @@
 #[cfg(feature = "ssr")]
 pub mod get_requests {
     use actix_web::{get, HttpResponse, Responder, web};
-    use sqlx::MySqlPool;
-    use serde::{Serialize, Deserialize};
 
 
     #[get("/api/v1/f1/{year}/circuits/{circuitId}")]
     pub async fn get_circuit_info(
-        year: web::Path<(i32, String)>, 
-        info: web::Path<(i32, String)>,
+        info: web::Path<(i32, String)>
     ) -> impl Responder {
         // Extract `year` and `circuitId` from the URL path
         let year = info.0;
