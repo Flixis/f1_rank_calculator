@@ -26,7 +26,7 @@ pub mod get_requests {
         limit: i32
     }
 
-    #[get("/api/v1/f1/qualifying")]
+    #[get("qualifying")]
     pub async fn get_qualifying(
         pool: web::Data<MySqlPool>,
         query_params: web::Query<QualifyingQueryParams>,

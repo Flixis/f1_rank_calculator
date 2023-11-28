@@ -31,8 +31,9 @@ async fn main() -> std::io::Result<()> {
         let site_root = &leptos_options.site_root;
 
         App::new()
-            .service(get_qualifying)
-            .service(get_driver_information)
+            .service(web::scope("/api/v1/f1")
+                .service(get_driver_information)
+                .service(get_qualifying))
             .route("/api/{tail:.*}", leptos_actix::handle_server_fns())
             // serve JS/WASM/CSS from `pkg`
             .service(Files::new("/pkg", format!("{site_root}/pkg")))
@@ -43,7 +44,6 @@ async fn main() -> std::io::Result<()> {
             .leptos_routes(leptos_options.to_owned(), routes.to_owned(), App)
             .app_data(web::Data::new(leptos_options.to_owned()))
             .app_data(web::Data::new(db_pool.clone()))
-        //.wrap(middleware::Compress::default())
     })
     .bind(&addr)?
     .run()

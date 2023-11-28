@@ -22,51 +22,20 @@ pub mod get_requests {
     }
     
 
-    #[get("/api/v1/f1/drivers/{driver_name}/{constructor}")]
-    async fn get_driver_information(
-        path: web::Path<(String, Option<String>)>,
-        pool: web::Data<MySqlPool>,
-    ) -> impl Responder {
-        let (driver_name, constructor) = path.into_inner(); // Access the tuple
-        dbg!(&driver_name, &constructor);
+    #[get("/drivers/{driver_name}/{tail:.*}")]
+    async fn get_driver_information(path: web::Path<(String, Option<String>)>) -> impl Responder {
+        let (driver_name, tail) = path.into_inner();
 
-        let query = match constructor {
-            Some(constructor_name) => {
-                // Query that includes constructor data
-                format!("SELECT DISTINCT s.year
-                FROM results res
-                JOIN races r ON res.raceid = r.raceid
-                JOIN seasons s ON r.year = s.year
-                JOIN drivers d ON res.driverid = d.driverid
-                JOIN constructors c ON res.constructorid = c.constructorid
-                WHERE d.driverid = {}
-                AND c.constructorid = {};", driver_name, constructor_name)
-            },
-            None => {
-                // Query without constructor data
-                format!("SELECT * FROM drivers WHERE driverRef = \"{}\" LIMIT 1;", driver_name)
-            }
+        let constructor = if tail.clone().expect("something went wrong").is_empty() {
+            None
+        } else {
+            Some(tail)
         };
-
-        dbg!(&query);
-
-        let result = sqlx::query_as::<_, DriverInfo>(&query)
-        .fetch_all(pool.get_ref())
-        .await;
-
-        match result {
-            Ok(mut drivers) => {
-                if let Some(driver) = drivers.pop() {
-                    HttpResponse::Ok().json(driver)
-                } else {
-                    HttpResponse::NotFound().body("Driver not found")
-                }
-            }
-            Err(e) => {
-                eprintln!("Database error: {:?}", e);
-                HttpResponse::InternalServerError().finish()
-            }
+    
+        match constructor {
+            Some(constructor) => HttpResponse::Ok().body(format!("Driver: {}, Constructor: {}", driver_name, constructor.expect("REASON").to_string())),
+            None => HttpResponse::Ok().body(format!("Driver: {}", driver_name))
         }
-    }  
+    }
 
 }
