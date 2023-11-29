@@ -7,8 +7,8 @@ async fn main() -> std::io::Result<()> {
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
     use f1_rank_calculator::app::*;
-    use f1_rank_calculator::api::qualifying::get_requests::get_qualifying;
-    use f1_rank_calculator::api::drivers::get_requests::get_driver_information;
+    use f1_rank_calculator::api::qualifying::get_requests::*;
+    use f1_rank_calculator::api::drivers::get_requests::*;
 
 
     let conf = get_configuration(None).await.unwrap();
@@ -32,8 +32,14 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .service(web::scope("/api/v1/f1")
-                .service(get_driver_information)
-                .service(get_qualifying))
+                .service(get_qualifying)
+                    .service(web::scope("/drivers")
+                    .service(get_driver)
+                    .service(get_driver_and_constructor)
+                    .service(get_driver_constructor_seasons)
+                )
+            )
+
             .route("/api/{tail:.*}", leptos_actix::handle_server_fns())
             // serve JS/WASM/CSS from `pkg`
             .service(Files::new("/pkg", format!("{site_root}/pkg")))

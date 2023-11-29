@@ -22,20 +22,22 @@ pub mod get_requests {
     }
     
 
-    #[get("/drivers/{driver_name}/{tail:.*}")]
-    async fn get_driver_information(path: web::Path<(String, Option<String>)>) -> impl Responder {
-        let (driver_name, tail) = path.into_inner();
-
-        let constructor = if tail.clone().expect("something went wrong").is_empty() {
-            None
-        } else {
-            Some(tail)
-        };
+    #[get("/{driver_name}")]
+    pub async fn get_driver(path: web::Path<String>) -> impl Responder {
+        let driver_name = path.into_inner();
+        HttpResponse::Ok().body(format!("Driver: {}", driver_name))
+    }
     
-        match constructor {
-            Some(constructor) => HttpResponse::Ok().body(format!("Driver: {}, Constructor: {}", driver_name, constructor.expect("REASON").to_string())),
-            None => HttpResponse::Ok().body(format!("Driver: {}", driver_name))
-        }
+    #[get("/{driver_name}/{constructor}")]
+    pub async fn get_driver_and_constructor(path: web::Path<(String, String)>) -> impl Responder {
+        let (driver_name, constructor) = path.into_inner();
+        HttpResponse::Ok().body(format!("Driver: {}, Constructor: {}", driver_name, constructor))
+    }
+    
+    #[get("/{driver_name}/{constructor}/{seasons}")]
+    pub async fn get_driver_constructor_seasons(path: web::Path<(String, String, String)>) -> impl Responder {
+        let (driver_name, constructor, seasons) = path.into_inner();
+        HttpResponse::Ok().body(format!("Driver: {}, Constructor: {}, Seasons: {}", driver_name, constructor, seasons))
     }
 
 }
